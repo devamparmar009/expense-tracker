@@ -305,7 +305,11 @@ async function manualSync() {
     showToast(updated ? 'Data updated from cloud' : 'Already up to date', updated ? 'success' : 'info');
     if (updated) setTimeout(() => location.reload(), 1200);
   } catch (e) {
-    showToast('Sync failed — check your connection', 'error');
+    // Surface the real cause: password mismatch, token issue, missing gist.
+    // Only a genuine network failure (TypeError "Failed to fetch") gets the
+    // generic connection message.
+    const networkFail = e instanceof TypeError || /failed to fetch|networkerror/i.test(e.message || '');
+    showToast(networkFail ? 'Sync failed — check your connection' : (e.message || 'Sync failed'), 'error');
   } finally {
     btn.textContent = 'Sync Now';
   }
