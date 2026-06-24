@@ -22,7 +22,8 @@ async function initDashboard() {
   const daysLeft = getDaysLeftInMonth();
 
   // Hero
-  animateCountUp(document.getElementById('hero-remaining'), Math.abs(remaining), 900, remaining < 0 ? '-₹' : '₹');
+  const animDur = window.innerWidth < 768 ? 500 : 900;
+  animateCountUp(document.getElementById('hero-remaining'), Math.abs(remaining), animDur, remaining < 0 ? '-₹' : '₹');
   document.getElementById('hero-remaining').style.color = remaining < 0 ? 'var(--danger)' : 'var(--text-primary)';
   document.getElementById('hero-budget').textContent = formatCurrency(budget);
   document.getElementById('donut-remaining').textContent = formatCurrency(remaining);
@@ -88,8 +89,8 @@ function renderStatCards({ spent, remaining, budget, pct, daysLeft }) {
     <div class="stat-value">${daysLeft}</div>
     <div class="stat-sub">in this month</div>`;
 
-  animateCountUp(document.getElementById('stat-spent'), spent, 900);
-  animateCountUp(document.getElementById('stat-remaining'), Math.abs(remaining), 900, remaining < 0 ? '-₹' : '₹');
+  animateCountUp(document.getElementById('stat-spent'), spent, animDur);
+  animateCountUp(document.getElementById('stat-remaining'), Math.abs(remaining), animDur, remaining < 0 ? '-₹' : '₹');
 }
 
 function renderTopCategories(expenses, cats) {
@@ -238,6 +239,8 @@ document.getElementById('expense-modal').addEventListener('click', e => {
 
 function initParticles() {
   if (typeof particlesJS === 'undefined') return;
+  const isMobile = window.innerWidth < 768;
+  if (isMobile) return;
   particlesJS('particles-js', {
     particles: {
       number: { value: 44, density: { enable: true, value_area: 900 } },
@@ -250,10 +253,10 @@ function initParticles() {
     },
     interactivity: {
       detect_on: 'canvas',
-      events: { onhover: { enable: true, mode: 'grab' }, onclick: { enable: false } },
-      modes: { grab: { distance: 150, line_linked: { opacity: 0.25 } } }
+      events: { onhover: { enable: false }, onclick: { enable: false } },
+      modes: {}
     },
-    retina_detect: true
+    retina_detect: false
   });
 }
 

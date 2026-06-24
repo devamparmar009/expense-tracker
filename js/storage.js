@@ -2,12 +2,16 @@
 // Call getData() to get the decrypted data object.
 // Call saveData(data) to encrypt and persist.
 
+let _dataCache = null;
+
 async function getData() {
+  if (_dataCache) return _dataCache;
   const key = getSessionKey();
   const encrypted = localStorage.getItem('etd');
   if (!encrypted) return null;
   const data = await decryptData(encrypted, key);
-  return data ? migrateData(data) : data;
+  _dataCache = data ? migrateData(data) : null;
+  return _dataCache;
 }
 
 // Upgrade legacy emoji-based categories to icon keys (non-destructive,
@@ -24,6 +28,7 @@ function migrateData(data) {
 }
 
 async function saveData(data) {
+  _dataCache = data;
   const key = getSessionKey();
   const encrypted = await encryptData(data, key);
   localStorage.setItem('etd', encrypted);
@@ -129,6 +134,7 @@ async function importJSON(jsonData, mode = 'replace') {
   }
 
   if (mode === 'replace') {
+    _dataCache = null;
     await saveData({ ...imported, version: 1 });
     return;
   }
@@ -153,6 +159,7 @@ async function clearAllData() {
     budgets: {},
     expenses: []
   };
+  _dataCache = blankData;
   const encrypted = await encryptData(blankData, key);
   localStorage.setItem('etd', encrypted);
 }
