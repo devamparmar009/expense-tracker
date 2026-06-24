@@ -162,16 +162,18 @@ function renderPmChart(expenses) {
   const values = PAYMENT_METHODS.map(p => totals[p.id]);
   const colors = PAYMENT_METHODS.map(p => pmColors[p.id]);
 
-  const ctx = document.getElementById('pm-chart').getContext('2d');
+  const canvas = document.getElementById('pm-chart');
   if (_pmChart) { _pmChart.destroy(); _pmChart = null; }
 
   const total = values.reduce((a, b) => a + b, 0);
   if (total === 0) {
-    document.getElementById('pm-chart').closest('div').innerHTML = '<p style="color:var(--text-muted);font-size:0.85rem;text-align:center;padding:40px 0;">No expenses yet</p>';
-    document.getElementById('pm-legend').innerHTML = '';
+    canvas.style.display = 'none';
+    document.getElementById('pm-legend').innerHTML = '<p style="color:var(--text-muted);font-size:0.85rem;text-align:center;padding:30px 0;">No expenses yet</p>';
     return;
   }
 
+  canvas.style.display = 'block';
+  const ctx = canvas.getContext('2d');
   _pmChart = new Chart(ctx, {
     type: 'doughnut',
     data: {
