@@ -2,6 +2,7 @@ let _categories = [];
 let _editingId = null;
 let _selectedCatId = null;
 let _selectedPm = 'upi';
+const animDur = window.innerWidth < 768 ? 500 : 900;
 
 async function initDashboard() {
   setActiveNav();
@@ -22,7 +23,6 @@ async function initDashboard() {
   const daysLeft = getDaysLeftInMonth();
 
   // Hero
-  const animDur = window.innerWidth < 768 ? 500 : 900;
   animateCountUp(document.getElementById('hero-remaining'), Math.abs(remaining), animDur, remaining < 0 ? '-₹' : '₹');
   document.getElementById('hero-remaining').style.color = remaining < 0 ? 'var(--danger)' : 'var(--text-primary)';
   document.getElementById('hero-budget').textContent = formatCurrency(budget);
