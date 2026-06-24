@@ -34,7 +34,7 @@ async function saveData(data) {
   const key = getSessionKey();
   const encrypted = await encryptData(data, key);
   localStorage.setItem('etd', encrypted);
-  if (typeof pushToGist === 'function') pushToGist(encrypted).catch(() => {});
+  if (typeof pushToGist === 'function') pushToGist(encrypted).catch(e => console.warn('Sync push failed:', e));
 }
 
 // ─── Expenses ───

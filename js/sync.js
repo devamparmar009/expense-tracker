@@ -53,6 +53,9 @@ async function _verifyBlob(blob) {
     const key = getSessionKey();
     const data = await decryptData(blob, key);
     if (!data) throw new Error('bad decrypt');
+    if (!Array.isArray(data.expenses) || typeof data.budgets !== 'object') {
+      throw new Error('bad decrypt');
+    }
   } catch {
     throw new Error('Password mismatch — both devices must use the same app password for sync to work.');
   }

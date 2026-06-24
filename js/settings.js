@@ -299,7 +299,7 @@ async function manualSync() {
   btn.textContent = 'Syncing…';
   try {
     const updated = await pullFromGist();
-    await pushToGist();
+    if (!updated) await pushToGist();
     const last = getSyncLastTime();
     document.getElementById('sync-last-text').textContent = last ? 'Last synced ' + last : 'Synced';
     showToast(updated ? 'Data updated from cloud' : 'Already up to date', updated ? 'success' : 'info');
