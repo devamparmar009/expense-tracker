@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#15161f" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <title>Expenses — Expense Tracker</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="css/main.css" />
+</head>
+<body>
+
+<div id="auth-overlay" style="display:none"></div>
+
+<div id="main-content" style="display:none">
+
+  <div class="aurora"></div>
+
+  <nav class="top-nav">
+    <div class="nav-brand">
+      <span class="brand-mark"><svg class="icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/></svg></span>
+      Expense Tracker
+    </div>
+    <a href="index.html" class="nav-link"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>Dashboard</a>
+    <a href="expenses.html" class="nav-link"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 17.5v-11"/></svg>Expenses</a>
+    <a href="analytics.html" class="nav-link"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg>Analytics</a>
+    <a href="settings.html" class="nav-link"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2Z"/><circle cx="12" cy="12" r="3"/></svg>Settings</a>
+  </nav>
+
+  <main class="page">
+    <div class="page-header" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;">
+      <div>
+        <h1 class="page-title">Expenses</h1>
+        <p class="page-subtitle">Track every rupee you spend</p>
+      </div>
+      <button class="btn btn-primary" onclick="openExpenseModal()" id="add-btn">Add Expense</button>
+    </div>
+
+    <div class="month-picker">
+      <button onclick="changeMonth(-1)" id="prev-month-btn"></button>
+      <div class="month-picker-label" id="month-label">June 2026</div>
+      <button onclick="changeMonth(1)" id="next-month-btn"></button>
+    </div>
+
+    <div class="summary-bar">
+      <div class="summary-bar-stat"><div class="summary-bar-val" id="sum-budget">₹0</div><div class="summary-bar-lbl">Budget</div></div>
+      <div class="summary-bar-div"></div>
+      <div class="summary-bar-stat"><div class="summary-bar-val" id="sum-spent" style="color:var(--danger)">₹0</div><div class="summary-bar-lbl">Spent</div></div>
+      <div class="summary-bar-div"></div>
+      <div class="summary-bar-stat"><div class="summary-bar-val" id="sum-remaining" style="color:var(--success)">₹0</div><div class="summary-bar-lbl">Remaining</div></div>
+      <div class="summary-bar-div"></div>
+      <div class="summary-bar-stat"><div class="summary-bar-val" id="sum-count">0</div><div class="summary-bar-lbl">Entries</div></div>
+    </div>
+
+    <div class="filters">
+      <div class="search-wrap">
+        <span class="search-icon" id="search-ico"></span>
+        <input type="text" id="search-input" placeholder="Search expenses…" oninput="applyFilters()" />
+      </div>
+      <select id="cat-filter" onchange="applyFilters()" style="width:auto;padding:10px 14px;font-size:0.85rem;"><option value="">All Categories</option></select>
+      <select id="pm-filter" onchange="applyFilters()" style="width:auto;padding:10px 14px;font-size:0.85rem;">
+        <option value="">All Methods</option>
+        <option value="upi">UPI</option>
+        <option value="cash">Cash</option>
+        <option value="card">Card</option>
+        <option value="netbanking">Net Banking</option>
+      </select>
+    </div>
+
+    <div id="tx-list"></div>
+  </main>
+
+  <button class="fab" onclick="openExpenseModal()" title="Add expense" id="fab-btn"></button>
+
+  <nav class="bottom-nav">
+    <a href="index.html" class="bottom-nav-item"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>Dashboard</a>
+    <a href="expenses.html" class="bottom-nav-item"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 17.5v-11"/></svg>Expenses</a>
+    <a href="analytics.html" class="bottom-nav-item"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg>Analytics</a>
+    <a href="settings.html" class="bottom-nav-item"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2Z"/><circle cx="12" cy="12" r="3"/></svg>Settings</a>
+  </nav>
+
+</div>
+
+<!-- Add/Edit Modal -->
+<div class="modal-backdrop" id="expense-modal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="modal-title">Add Expense</div>
+    <div class="form-group">
+      <label>Amount</label>
+      <div class="amount-input-wrap"><span class="currency-symbol">₹</span><input type="number" id="exp-amount" placeholder="0" min="1" inputmode="decimal" /></div>
+    </div>
+    <div class="form-group"><label>Category</label><div class="category-grid" id="cat-grid"></div></div>
+    <div class="form-group"><label>Note <span style="color:var(--text-muted);font-weight:400;text-transform:none;">(optional)</span></label><input type="text" id="exp-note" placeholder="What did you spend on?" /></div>
+    <div class="form-group"><label>Payment Method</label><div class="pm-tabs" id="pm-tabs"></div></div>
+    <div class="form-group"><label>Date</label><input type="date" id="exp-date" /></div>
+    <div style="display:flex;gap:12px;margin-top:24px;">
+      <button class="btn btn-ghost" style="flex:1" onclick="closeExpenseModal()">Cancel</button>
+      <button class="btn btn-primary" style="flex:2" id="exp-submit" onclick="submitExpense()">Add Expense</button>
+    </div>
+  </div>
+</div>
+
+<!-- Delete Confirm -->
+<div class="modal-backdrop" id="delete-modal">
+  <div class="modal" style="max-width:380px;">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Delete Expense?</div>
+    <p style="color:var(--text-secondary);font-size:0.9rem;margin-bottom:24px;">This action cannot be undone.</p>
+    <div style="display:flex;gap:12px;">
+      <button class="btn btn-ghost" style="flex:1" onclick="closeDeleteModal()">Cancel</button>
+      <button class="btn btn-danger" style="flex:1" id="delete-confirm-btn">Delete</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast-container"></div>
+
+<script src="js/icons.js"></script>
+<script src="js/app.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/storage.js"></script>
+<script src="js/expenses.js"></script>
+<script>
+  if ('serviceWorker' in navigator) { navigator.serviceWorker.register('./sw.js').catch(() => {}); }
+</script>
+</body>
+</html>

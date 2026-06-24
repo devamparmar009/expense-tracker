@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#15161f" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <title>Settings — Expense Tracker</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="css/main.css" />
+</head>
+<body>
+
+<div id="auth-overlay" style="display:none"></div>
+
+<div id="main-content" style="display:none">
+
+  <div class="aurora"></div>
+
+  <nav class="top-nav">
+    <div class="nav-brand">
+      <span class="brand-mark"><svg class="icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/></svg></span>
+      Expense Tracker
+    </div>
+    <a href="index.html" class="nav-link"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>Dashboard</a>
+    <a href="expenses.html" class="nav-link"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 17.5v-11"/></svg>Expenses</a>
+    <a href="analytics.html" class="nav-link"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg>Analytics</a>
+    <a href="settings.html" class="nav-link"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2Z"/><circle cx="12" cy="12" r="3"/></svg>Settings</a>
+  </nav>
+
+  <main class="page" style="max-width:720px;">
+    <div class="page-header">
+      <h1 class="page-title">Settings</h1>
+      <p class="page-subtitle">Manage your budget, categories, and data</p>
+    </div>
+
+    <!-- Budget -->
+    <div class="setting-section">
+      <div class="setting-section-title">Monthly Budget</div>
+      <div class="card" style="margin-bottom:12px;">
+        <div class="month-picker" style="margin-bottom:18px;">
+          <button onclick="budgetMonth(-1)" id="bud-prev"></button>
+          <div class="month-picker-label" id="bud-month-label">June 2026</div>
+          <button onclick="budgetMonth(1)" id="bud-next"></button>
+        </div>
+        <div style="display:flex;align-items:flex-end;gap:16px;flex-wrap:wrap;">
+          <div style="flex:1;min-width:180px;">
+            <label>Budget for <span id="current-month-label">this month</span></label>
+            <div class="amount-input-wrap"><span class="currency-symbol">₹</span><input type="number" id="budget-input" placeholder="10000" min="1" inputmode="decimal" /></div>
+          </div>
+          <button class="btn btn-primary" onclick="saveBudget()" id="save-budget-btn" style="margin-bottom:1px;">Save Budget</button>
+        </div>
+        <p style="font-size:0.78rem;color:var(--text-muted);margin-top:12px;">Use the arrows to set or edit the budget for any month — past or upcoming.</p>
+      </div>
+      <div id="past-budgets"></div>
+    </div>
+
+    <!-- Categories -->
+    <div class="setting-section">
+      <div class="setting-section-title">Categories</div>
+      <div id="cat-list"></div>
+      <button class="btn btn-ghost btn-full" style="margin-top:8px;" onclick="openAddCatModal()" id="add-cat-btn">Add Category</button>
+    </div>
+
+    <!-- Data -->
+    <div class="setting-section">
+      <div class="setting-section-title">Data</div>
+      <div class="setting-item">
+        <div class="setting-item-info"><span class="setting-item-ico" id="ico-export"></span><div><div class="setting-item-label">Export Backup</div><div class="setting-item-desc">Download all your data as a JSON file</div></div></div>
+        <button class="btn btn-ghost btn-sm" onclick="handleExport()">Export</button>
+      </div>
+      <div class="setting-item">
+        <div class="setting-item-info"><span class="setting-item-ico" id="ico-import"></span><div><div class="setting-item-label">Import Backup</div><div class="setting-item-desc">Restore from a previously exported file</div></div></div>
+        <button class="btn btn-ghost btn-sm" onclick="document.getElementById('import-file').click()">Import</button>
+        <input type="file" id="import-file" accept=".json" style="display:none;" onchange="handleImport(event)" />
+      </div>
+      <div class="setting-item">
+        <div class="setting-item-info"><span class="setting-item-ico danger" id="ico-clear"></span><div><div class="setting-item-label" style="color:var(--danger);">Clear All Data</div><div class="setting-item-desc">Delete all expenses and budgets permanently</div></div></div>
+        <button class="btn btn-danger btn-sm" onclick="openClearModal()">Clear</button>
+      </div>
+    </div>
+
+    <!-- Security -->
+    <div class="setting-section">
+      <div class="setting-section-title">Security</div>
+      <div class="setting-item">
+        <div class="setting-item-info"><span class="setting-item-ico" id="ico-lock"></span><div><div class="setting-item-label">Change Password</div><div class="setting-item-desc">Re-encrypts all your data with the new password</div></div></div>
+        <button class="btn btn-ghost btn-sm" onclick="openChangePasswordModal()">Change</button>
+      </div>
+    </div>
+  </main>
+
+  <nav class="bottom-nav">
+    <a href="index.html" class="bottom-nav-item"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>Dashboard</a>
+    <a href="expenses.html" class="bottom-nav-item"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 17.5v-11"/></svg>Expenses</a>
+    <a href="analytics.html" class="bottom-nav-item"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg>Analytics</a>
+    <a href="settings.html" class="bottom-nav-item"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2Z"/><circle cx="12" cy="12" r="3"/></svg>Settings</a>
+  </nav>
+
+</div>
+
+<!-- Add/Edit Category Modal -->
+<div class="modal-backdrop" id="cat-modal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="cat-modal-title">Add Category</div>
+    <div class="form-group"><label>Name</label><input type="text" id="cat-name" placeholder="e.g. Groceries" /></div>
+    <div class="form-group"><label>Icon</label><div class="icon-grid" id="icon-grid"></div></div>
+    <div class="form-group"><label>Color</label><div class="color-options" id="color-options"></div></div>
+    <div style="display:flex;gap:12px;margin-top:24px;">
+      <button class="btn btn-ghost" style="flex:1" onclick="closeCatModal()">Cancel</button>
+      <button class="btn btn-primary" style="flex:2" id="cat-submit" onclick="submitCategory()">Add Category</button>
+    </div>
+  </div>
+</div>
+
+<!-- Change Password Modal -->
+<div class="modal-backdrop" id="pw-modal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Change Password</div>
+    <div class="auth-error" id="pw-error"></div>
+    <div class="form-group"><label>Current Password</label><input type="password" id="pw-current" placeholder="Your current password" /></div>
+    <div class="form-group"><label>New Password</label><input type="password" id="pw-new" placeholder="At least 6 characters" /></div>
+    <div class="form-group"><label>Confirm New Password</label><input type="password" id="pw-confirm" placeholder="Repeat new password" /></div>
+    <div style="display:flex;gap:12px;margin-top:24px;">
+      <button class="btn btn-ghost" style="flex:1" onclick="closePwModal()">Cancel</button>
+      <button class="btn btn-primary" style="flex:2" id="pw-submit" onclick="submitPasswordChange()">Update Password</button>
+    </div>
+  </div>
+</div>
+
+<!-- Import Mode Modal -->
+<div class="modal-backdrop" id="import-modal">
+  <div class="modal" style="max-width:400px;">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Import Data</div>
+    <p style="color:var(--text-secondary);font-size:0.875rem;margin-bottom:20px;">How should we handle existing data?</p>
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <button class="btn btn-ghost" onclick="confirmImport('merge')" style="justify-content:flex-start;gap:12px;" id="merge-btn"></button>
+      <button class="btn btn-danger" onclick="confirmImport('replace')" style="justify-content:flex-start;gap:12px;" id="replace-btn"></button>
+      <button class="btn btn-ghost btn-sm" onclick="closeImportModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- Clear Confirm Modal -->
+<div class="modal-backdrop" id="clear-modal">
+  <div class="modal" style="max-width:380px;">
+    <div class="modal-handle"></div>
+    <div class="modal-title" style="color:var(--danger);">Clear All Data?</div>
+    <p style="color:var(--text-secondary);font-size:0.875rem;margin-bottom:8px;">This will permanently delete all your expenses and budgets. Your categories reset to defaults.</p>
+    <p style="color:var(--danger);font-size:0.85rem;font-weight:600;margin-bottom:24px;">This cannot be undone.</p>
+    <div style="display:flex;gap:12px;">
+      <button class="btn btn-ghost" style="flex:1" onclick="closeClearModal()">Cancel</button>
+      <button class="btn btn-danger" style="flex:1" onclick="confirmClearAll()">Yes, Clear All</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast-container"></div>
+
+<script src="js/icons.js"></script>
+<script src="js/app.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/storage.js"></script>
+<script src="js/settings.js"></script>
+<script>
+  if ('serviceWorker' in navigator) { navigator.serviceWorker.register('./sw.js').catch(() => {}); }
+</script>
+</body>
+</html>

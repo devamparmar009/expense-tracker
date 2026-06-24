@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#15161f" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <title>Analytics — Expense Tracker</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="css/main.css" />
+  <link rel="stylesheet" href="css/charts.css" />
+</head>
+<body>
+
+<div id="auth-overlay" style="display:none"></div>
+
+<div id="main-content" style="display:none">
+
+  <div class="aurora"></div>
+
+  <nav class="top-nav">
+    <div class="nav-brand">
+      <span class="brand-mark"><svg class="icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/></svg></span>
+      Expense Tracker
+    </div>
+    <a href="index.html" class="nav-link"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>Dashboard</a>
+    <a href="expenses.html" class="nav-link"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 17.5v-11"/></svg>Expenses</a>
+    <a href="analytics.html" class="nav-link"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg>Analytics</a>
+    <a href="settings.html" class="nav-link"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2Z"/><circle cx="12" cy="12" r="3"/></svg>Settings</a>
+  </nav>
+
+  <main class="page">
+    <div class="page-header">
+      <h1 class="page-title">Analytics</h1>
+      <p class="page-subtitle" id="analytics-subtitle">Insights for June 2026</p>
+    </div>
+
+    <div class="month-picker">
+      <button onclick="changeMonth(-1)" id="prev-month-btn"></button>
+      <div class="month-picker-label" id="month-label">June 2026</div>
+      <button onclick="changeMonth(1)" id="next-month-btn"></button>
+    </div>
+
+    <div class="grid-2" style="margin-bottom:18px;align-items:start;">
+      <div class="card animate-fade-up">
+        <div class="card-title">Budget Overview</div>
+        <div class="donut-wrap" style="margin:18px auto;">
+          <svg class="donut-svg" width="200" height="200" viewBox="0 0 200 200">
+            <defs><linearGradient id="donutGradient" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#6E8BFF"/><stop offset="100%" stop-color="#B98CF5"/></linearGradient></defs>
+            <circle class="donut-track" cx="100" cy="100" r="80"/>
+            <circle class="donut-fill" id="donut-fill" cx="100" cy="100" r="80"/>
+          </svg>
+          <div class="donut-center"><div class="donut-remaining" id="donut-pct">0%</div><div class="donut-label">spent</div></div>
+        </div>
+        <div style="display:flex;justify-content:space-around;margin-top:8px;">
+          <div style="text-align:center;"><div style="font-size:0.7rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:4px;">Budget</div><div style="font-weight:700;" id="a-budget">₹0</div></div>
+          <div style="text-align:center;"><div style="font-size:0.7rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:4px;">Spent</div><div style="font-weight:700;color:var(--danger);" id="a-spent">₹0</div></div>
+          <div style="text-align:center;"><div style="font-size:0.7rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:4px;">Saved</div><div style="font-weight:700;color:var(--success);" id="a-remaining">₹0</div></div>
+        </div>
+      </div>
+
+      <div class="card animate-fade-up">
+        <div class="card-title">Spending by Category</div>
+        <div style="margin-top:12px;" id="cat-bars"></div>
+      </div>
+    </div>
+
+    <div class="card animate-fade-up" style="margin-bottom:18px;">
+      <div class="card-title">Monthly Trend · Last 6 Months</div>
+      <div style="position:relative;height:240px;margin-top:16px;"><canvas id="trend-chart"></canvas></div>
+    </div>
+
+    <div class="grid-2" style="margin-bottom:18px;align-items:start;">
+      <div class="card animate-fade-up">
+        <div class="card-title">Payment Methods</div>
+        <div style="position:relative;height:200px;margin:16px auto;max-width:200px;"><canvas id="pm-chart"></canvas></div>
+        <div id="pm-legend" style="margin-top:12px;"></div>
+      </div>
+
+      <div class="card animate-fade-up">
+        <div class="card-title">Insights</div>
+        <div id="insights-list" style="margin-top:6px;"></div>
+      </div>
+    </div>
+
+    <div class="card animate-fade-up">
+      <div class="section-header">
+        <div class="section-title">Month-over-Month</div>
+        <span style="font-size:0.8rem;color:var(--text-muted);">Last 3 months</span>
+      </div>
+      <div style="overflow-x:auto;margin-top:12px;">
+        <table class="compare-table" id="compare-table"><thead><tr id="compare-head"></tr></thead><tbody id="compare-body"></tbody></table>
+      </div>
+    </div>
+  </main>
+
+  <nav class="bottom-nav">
+    <a href="index.html" class="bottom-nav-item"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>Dashboard</a>
+    <a href="expenses.html" class="bottom-nav-item"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 17.5v-11"/></svg>Expenses</a>
+    <a href="analytics.html" class="bottom-nav-item"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg>Analytics</a>
+    <a href="settings.html" class="bottom-nav-item"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2Z"/><circle cx="12" cy="12" r="3"/></svg>Settings</a>
+  </nav>
+
+</div>
+
+<div class="toast-container"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="js/icons.js"></script>
+<script src="js/app.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/storage.js"></script>
+<script src="js/analytics.js"></script>
+<script>
+  if ('serviceWorker' in navigator) { navigator.serviceWorker.register('./sw.js').catch(() => {}); }
+</script>
+</body>
+</html>

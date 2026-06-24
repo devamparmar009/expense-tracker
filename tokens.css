@@ -1,0 +1,46 @@
+/* Expense Tracker — design tokens (Hallmark · Workbench · atmospheric-dark)
+ * Portable token set. Mirrors the :root block in css/main.css. */
+:root {
+  /* Paper */
+  --color-paper:    oklch(15% 0.022 268);
+  --color-paper-2:  oklch(18% 0.028 268);
+
+  /* Ink */
+  --color-ink:      oklch(98% 0.004 268);
+  --color-ink-2:    oklch(98% 0.004 268 / 0.62);
+  --color-ink-3:    oklch(98% 0.004 268 / 0.36);
+
+  /* Accent */
+  --color-accent:     oklch(64% 0.17 268);
+  --color-accent-2:   oklch(62% 0.21 305);
+  --color-accent-ink: oklch(99% 0.005 268);
+
+  /* Lines + semantic */
+  --color-rule:        oklch(100% 0 0 / 0.08);
+  --color-rule-strong: oklch(100% 0 0 / 0.16);
+  --color-success:     oklch(76% 0.15 162);
+  --color-danger:      oklch(66% 0.2 18);
+  --color-warning:     oklch(78% 0.15 70);
+  --color-focus:       oklch(64% 0.17 268);
+
+  /* Type */
+  --font-display: 'Sora', 'Inter', sans-serif;
+  --font-body:    'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+
+  /* Spacing — 4pt scale */
+  --space-3xs: 0.25rem; --space-2xs: 0.5rem; --space-xs: 0.75rem;
+  --space-sm: 1rem;     --space-md: 1.5rem;  --space-lg: 2rem;
+  --space-xl: 3rem;     --space-2xl: 4.5rem; --space-3xl: 7rem;
+
+  /* Type scale */
+  --text-xs: 0.72rem; --text-sm: 0.875rem; --text-md: 1rem;
+  --text-lg: 1.25rem; --text-xl: 1.75rem;  --text-2xl: 2.25rem;
+
+  /* Radius */
+  --radius-sm: 12px; --radius-md: 18px; --radius-lg: 26px; --radius-pill: 999px;
+
+  /* Motion */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-short: 280ms;
+}

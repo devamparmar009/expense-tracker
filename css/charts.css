@@ -1,0 +1,15 @@
+/* Chart.js canvas container tweaks */
+canvas {
+  display: block;
+  width: 100% !important;
+}
+
+/* Trend chart wrapper */
+#trend-chart {
+  height: 240px !important;
+}
+
+/* PM chart wrapper */
+#pm-chart {
+  height: 200px !important;
+}
