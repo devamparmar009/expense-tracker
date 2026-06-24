@@ -49,15 +49,18 @@ async function _findGist(token) {
 }
 
 async function _verifyBlob(blob) {
-  try {
-    const key = getSessionKey();
-    const data = await decryptData(blob, key);
-    if (!data) throw new Error('bad decrypt');
-    if (!Array.isArray(data.expenses) || typeof data.budgets !== 'object') {
-      throw new Error('bad decrypt');
-    }
-  } catch {
+  if (!(await _canDecrypt(blob))) {
     throw new Error('Password mismatch — both devices must use the same app password for sync to work.');
+  }
+}
+
+// Non-throwing variant: true only if the blob decrypts cleanly with our key.
+async function _canDecrypt(blob) {
+  try {
+    const data = await decryptData(blob, getSessionKey());
+    return !!(data && Array.isArray(data.expenses) && typeof data.budgets === 'object');
+  } catch {
+    return false;
   }
 }
 
@@ -78,8 +81,10 @@ async function connectSync(token) {
     if (content) {
       const { ts, blob } = JSON.parse(content);
       const localTs = parseInt(localStorage.getItem(_SYNC_TS) || '0');
-      if (ts > localTs) {
-        await _verifyBlob(blob);
+      // Adopt the cloud copy only if it is newer AND we can actually read it
+      // with our password. If it is unreadable (a stale/orphaned blob from an
+      // older build), seed the cloud from this device instead of failing.
+      if (ts > localTs && await _canDecrypt(blob)) {
         localStorage.setItem('etd', blob);
         localStorage.setItem(_SYNC_TS, ts);
         clearDataCache();

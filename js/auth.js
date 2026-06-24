@@ -1,6 +1,15 @@
 // ─── In-memory session key ───
 let _sessionKey = null;
 
+// Shared, app-wide salt. The AES key is derived from (password + salt). Using
+// one fixed salt means the SAME password produces the SAME key on every
+// device — which is what lets encrypted data sync across devices. Earlier
+// builds used a random per-device salt, so a blob encrypted on one device
+// could not be decrypted on another even with the identical password.
+const APP_SALT_STR = 'expense-tracker::shared-salt::v1';
+const APP_SALT = new TextEncoder().encode(APP_SALT_STR);
+const APP_SALT_B64 = btoa(APP_SALT_STR);
+
 // ─── Crypto helpers ───
 
 async function deriveKey(password, salt) {
@@ -84,12 +93,12 @@ function getSessionKey() {
 }
 
 async function initializeApp(password) {
-  const salt = crypto.getRandomValues(new Uint8Array(16));
+  const salt = APP_SALT;
   const key = await deriveKey(password, salt);
   const verificationHash = await hashForVerification(password, salt);
 
   localStorage.setItem('et_meta', JSON.stringify({
-    salt: btoa(String.fromCharCode(...salt)),
+    salt: APP_SALT_B64,
     verificationHash
   }));
 
@@ -117,7 +126,22 @@ async function login(password) {
     throw new Error('Invalid password');
   }
 
-  const key = await deriveKey(password, salt);
+  let key = await deriveKey(password, salt);
+
+  // Migrate a legacy per-device random salt to the shared app salt, so this
+  // device's data becomes portable and can sync. Done here because login is
+  // the one place we have the plaintext password to re-derive the key.
+  if (meta.salt !== APP_SALT_B64) {
+    const data = await decryptData(localStorage.getItem('etd'), key);
+    key = await deriveKey(password, APP_SALT);
+    if (data) localStorage.setItem('etd', await encryptData(data, key));
+    localStorage.setItem('et_meta', JSON.stringify({
+      salt: APP_SALT_B64,
+      verificationHash: await hashForVerification(password, APP_SALT)
+    }));
+    if (typeof clearDataCache === 'function') clearDataCache();
+  }
+
   _sessionKey = key;
   await storeSessionKey(key);
   return key;
@@ -128,20 +152,20 @@ async function changePassword(currentPassword, newPassword) {
   const encryptedData = localStorage.getItem('etd');
   const data = await decryptData(encryptedData, _sessionKey);
 
-  const newSalt = crypto.getRandomValues(new Uint8Array(16));
-  const newKey = await deriveKey(newPassword, newSalt);
-  const newVerificationHash = await hashForVerification(newPassword, newSalt);
+  const newKey = await deriveKey(newPassword, APP_SALT);
+  const newVerificationHash = await hashForVerification(newPassword, APP_SALT);
 
   const newEncrypted = await encryptData(data, newKey);
 
   localStorage.setItem('et_meta', JSON.stringify({
-    salt: btoa(String.fromCharCode(...newSalt)),
+    salt: APP_SALT_B64,
     verificationHash: newVerificationHash
   }));
   localStorage.setItem('etd', newEncrypted);
 
   _sessionKey = newKey;
   await storeSessionKey(newKey);
+  if (typeof clearDataCache === 'function') clearDataCache();
 }
 
 // ─── Auth Gate UI ───
@@ -152,8 +176,17 @@ async function requireAuth(onAuthenticated) {
   const overlay = document.getElementById('auth-overlay');
   const main = document.getElementById('main-content');
 
+  // A legacy per-device salt must migrate to the shared app salt before sync
+  // can work. Migration needs the password, so drop any restored session and
+  // require one fresh login (which performs the migration transparently).
+  let needsMigration = false;
+  if (isInitialized()) {
+    try { needsMigration = JSON.parse(localStorage.getItem('et_meta')).salt !== APP_SALT_B64; } catch {}
+  }
+  if (needsMigration) sessionStorage.removeItem('et_sk');
+
   // Try restoring session from sessionStorage first
-  const restoredKey = await restoreSessionKey();
+  const restoredKey = needsMigration ? null : await restoreSessionKey();
   if (restoredKey) {
     if (overlay) overlay.style.display = 'none';
     if (main) main.style.display = 'block';
