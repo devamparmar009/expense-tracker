@@ -158,6 +158,7 @@ async function requireAuth(onAuthenticated) {
     if (overlay) overlay.style.display = 'none';
     if (main) main.style.display = 'block';
     onAuthenticated();
+    if (typeof syncInBackground === 'function') syncInBackground().catch(() => {});
     return;
   }
 
@@ -210,6 +211,9 @@ function renderSetupForm(overlay, onAuthenticated, main) {
 
     try {
       await initializeApp(pw);
+      if (typeof syncOnLogin === 'function') {
+        await Promise.race([syncOnLogin(), new Promise(r => setTimeout(r, 5000))]);
+      }
       overlay.style.display = 'none';
       if (main) main.style.display = 'block';
       onAuthenticated();
@@ -258,6 +262,9 @@ function renderLoginForm(overlay, onAuthenticated, main) {
 
     try {
       await login(pw);
+      if (typeof syncOnLogin === 'function') {
+        await Promise.race([syncOnLogin(), new Promise(r => setTimeout(r, 5000))]);
+      }
       overlay.style.display = 'none';
       if (main) main.style.display = 'block';
       onAuthenticated();

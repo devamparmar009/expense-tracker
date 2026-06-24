@@ -88,6 +88,41 @@
         <button class="btn btn-ghost btn-sm" onclick="openChangePasswordModal()">Change</button>
       </div>
     </div>
+
+    <!-- Cloud Sync -->
+    <div class="setting-section">
+      <div class="setting-section-title">Cloud Sync</div>
+
+      <div id="sync-connect-card" class="card" style="margin-bottom:0;display:none;">
+        <p style="font-size:0.875rem;color:var(--text-secondary);margin:0 0 16px;">
+          Sync across devices via a private GitHub Gist. Data stays AES-256 encrypted — only you can read it. Both devices must use the <strong>same app password</strong>.
+        </p>
+        <div class="form-group" style="margin-bottom:8px;">
+          <label>GitHub Personal Access Token</label>
+          <input type="password" id="sync-token-input" placeholder="ghp_xxxxxxxxxxxx" autocomplete="off" />
+        </div>
+        <p style="font-size:0.75rem;color:var(--text-muted);margin:0 0 16px;">
+          GitHub → Settings → Developer Settings → Personal access tokens (classic) → New token → tick <strong>gist</strong> scope only.
+        </p>
+        <button class="btn btn-primary btn-full" onclick="connectGistSync()" id="sync-connect-btn">Connect</button>
+      </div>
+
+      <div id="sync-status-card" style="display:none;">
+        <div class="setting-item">
+          <div class="setting-item-info">
+            <span class="setting-item-ico" id="ico-sync"></span>
+            <div>
+              <div class="setting-item-label">Cloud Sync Active</div>
+              <div class="setting-item-desc" id="sync-last-text">Checking…</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:8px;flex-shrink:0;">
+            <button class="btn btn-ghost btn-sm" onclick="manualSync()" id="sync-now-btn">Sync Now</button>
+            <button class="btn btn-danger btn-sm" onclick="disconnectGistSync()">Disconnect</button>
+          </div>
+        </div>
+      </div>
+    </div>
   </main>
 
   <nav class="bottom-nav">
@@ -161,6 +196,7 @@
 <div class="toast-container"></div>
 
 <script src="js/icons.js"></script>
+<script src="js/sync.js"></script>
 <script src="js/app.js"></script>
 <script src="js/auth.js"></script>
 <script src="js/storage.js"></script>

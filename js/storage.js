@@ -4,6 +4,8 @@
 
 let _dataCache = null;
 
+function clearDataCache() { _dataCache = null; }
+
 async function getData() {
   if (_dataCache) return _dataCache;
   const key = getSessionKey();
@@ -32,6 +34,7 @@ async function saveData(data) {
   const key = getSessionKey();
   const encrypted = await encryptData(data, key);
   localStorage.setItem('etd', encrypted);
+  if (typeof pushToGist === 'function') pushToGist(encrypted).catch(() => {});
 }
 
 // ─── Expenses ───

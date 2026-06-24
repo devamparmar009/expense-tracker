@@ -20,6 +20,7 @@ async function initSettings() {
   renderCategories(cats);
   buildIconPicker();
   buildColorPicker();
+  initSyncSection();
 }
 
 function renderBudgetEditor() {
@@ -256,5 +257,64 @@ async function submitPasswordChange() {
     if (e.target === document.getElementById(id)) document.getElementById(id).classList.remove('open');
   });
 });
+
+// ─── Cloud Sync ───
+
+function initSyncSection() {
+  document.getElementById('ico-sync').innerHTML = icon('cloudSync', { size: 18 });
+  if (isSyncEnabled()) {
+    document.getElementById('sync-connect-card').style.display = 'none';
+    document.getElementById('sync-status-card').style.display = 'block';
+    const last = getSyncLastTime();
+    document.getElementById('sync-last-text').textContent = last ? 'Last synced ' + last : 'Never synced';
+  } else {
+    document.getElementById('sync-connect-card').style.display = 'block';
+    document.getElementById('sync-status-card').style.display = 'none';
+  }
+}
+
+async function connectGistSync() {
+  const token = document.getElementById('sync-token-input').value.trim();
+  if (!token) { showToast('Enter your GitHub token', 'error'); return; }
+  const btn = document.getElementById('sync-connect-btn');
+  btn.textContent = 'Connecting…';
+  btn.classList.add('btn-loading');
+  try {
+    const result = await connectSync(token);
+    showToast('Cloud sync connected', 'success');
+    initSyncSection();
+    if (result.action === 'pulled') {
+      showToast('Newer data found in cloud — reloading…', 'info');
+      setTimeout(() => location.reload(), 1800);
+    }
+  } catch (e) {
+    showToast(e.message || 'Connection failed', 'error');
+    btn.textContent = 'Connect';
+    btn.classList.remove('btn-loading');
+  }
+}
+
+async function manualSync() {
+  const btn = document.getElementById('sync-now-btn');
+  btn.textContent = 'Syncing…';
+  try {
+    const updated = await pullFromGist();
+    await pushToGist();
+    const last = getSyncLastTime();
+    document.getElementById('sync-last-text').textContent = last ? 'Last synced ' + last : 'Synced';
+    showToast(updated ? 'Data updated from cloud' : 'Already up to date', updated ? 'success' : 'info');
+    if (updated) setTimeout(() => location.reload(), 1200);
+  } catch (e) {
+    showToast('Sync failed — check your connection', 'error');
+  } finally {
+    btn.textContent = 'Sync Now';
+  }
+}
+
+async function disconnectGistSync() {
+  await disconnectSync();
+  initSyncSection();
+  showToast('Cloud sync disconnected', 'info');
+}
 
 requireAuth(initSettings);
